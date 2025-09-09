@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chosen Palette: Dark Space Blue with Gradients -->
+    <!-- Application Structure Plan: The SPA is an interactive lesson about the French slang "J'ai la pêche." It features two buttons for language toggle, an introductory card explaining the core concept (literal vs. slang meaning), a grid of interactive cards for different real-life situations, and a final quiz section. This structure is designed to guide the user from understanding the concept to seeing it in context and finally applying their knowledge, which is a very effective flow for language learning. -->
+    <!-- Visualization & Content Choices: Report Info: Explanation of the slang term "J'ai la pêche." Goal: Teach the meaning and usage to Brazilians learning French. Viz/Presentation Method: Interactive cards with icons (e.g., 🏃‍♂️, ☀️) to make scenarios more engaging. Interaction: Click-to-reveal details on cards and a multiple-choice quiz. Justification: This interactive approach is more memorable than static text. Library/Method: Vanilla JS for all interactions. -->
+    <title>Expressões Francesas: "J'ai la pêche"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A192F;
+            color: #E2E8F0;
+        }
+        .gradient-text-title {
+            background: linear-gradient(90deg, #FF3300, #FFFFCC, #00CCCC, #FF00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .lesson-card {
+            background-color: #112240;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .situation-card {
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .situation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .situation-card .details {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out;
+            margin-top: 0;
+        }
+        .situation-card.open .details {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        .quiz-option {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .quiz-option:hover {
+            background-color: #334155;
+            border-color: #475569;
+        }
+        .quiz-option.correct {
+            background-color: #10B981;
+            border-color: #059669;
+        }
+        .quiz-option.incorrect {
+            background-color: #EF4444;
+            border-color: #DC2626;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto space-y-12">
+        
+        <div class="text-right space-x-2">
+            <button id="language-button-pt" class="hidden px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-full shadow-lg hover:bg-sky-700 transition-colors duration-300">
+                Mudar para Português
+            </button>
+            <button id="language-button-en" class="px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-full shadow-lg hover:bg-sky-700 transition-colors duration-300">
+                Switch to English
+            </button>
+        </div>
+
+        <!-- Portuguese Content -->
+        <div id="portuguese-content">
+            <header class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold">
+                    <span class="gradient-text-title">Descobrindo 'J'ai la pêche'</span>
+                </h1>
+                <p class="mt-2 text-lg text-slate-400">Quando a fruta simboliza energia e bom humor.</p>
+            </header>
+
+            <main class="space-y-12">
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">O Significado Secreto de "J'ai la pêche"</h2>
+                    <p class="text-slate-300">
+                        A tradução literal de <strong class="text-amber-300">"J'ai la pêche"</strong> é "Eu tenho o pêssego". Mas no francês do dia a dia, é uma expressão muito comum e positiva para dizer que você está se sentindo ótimo, com muita energia e de bom humor.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        É a forma perfeita de dizer **"Estou com a corda toda"**, **"Estou com todo o gás"** ou **"Estou me sentindo ótimo"**. É muito mais natural e comum do que frases formais como "Je me sens très bien."
+                    </p>
+                </section>
+                
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">A Lógica por Trás da Gíria</h2>
+                    <p class="text-slate-300">
+                        A fruta do pêssego (la pêche) é vista na cultura francesa como um símbolo de vitalidade e saúde. A expressão sugere que você se sente tão fresco, suculento e cheio de vida quanto um pêssego maduro.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        Use esta expressão sempre que estiver se sentindo cheio de energia, animado ou pronto para enfrentar um desafio!
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-center mb-6">Situações Reais <span class="text-base font-normal text-slate-400">(Clique para ver os exemplos)</span></h2>
+                    <div id="situations-container-pt" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Situation cards will be inserted here by JavaScript -->
+                    </div>
+                </section>
+
+                <section id="quiz-container-pt" class="lesson-card"></section>
+            </main>
+        </div>
+
+        <!-- English Content -->
+        <div id="english-content" class="hidden">
+            <header class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold">
+                    <span class="gradient-text-title">Decoding 'J'ai la pêche'</span>
+                </h1>
+                <p class="mt-2 text-lg text-slate-400">When fruit symbolizes energy and good spirits.</p>
+            </header>
+
+            <main class="space-y-12">
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">The Secret Meaning of "J'ai la pêche"</h2>
+                    <p class="text-slate-300">
+                        The literal translation of <strong class="text-amber-300">"J'ai la pêche"</strong> is "I have the peach." But in everyday French, it's a very common and positive expression used to say that you're feeling great, full of energy, and in a good mood.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        It's the perfect way to say **"I'm on top of the world"**, **"I'm full of energy"**, or **"I'm feeling great"**. It's much more natural and common than formal phrases like "Je me sens très bien."
+                    </p>
+                </section>
+                
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">The Logic Behind the Slang</h2>
+                    <p class="text-slate-300">
+                        The peach fruit (la pêche) is seen in French culture as a symbol of vitality and health. The expression suggests that you feel as fresh, juicy, and full of life as a ripe peach.
+                    </p>
+                    <p class="text-slate-300 mt-4">
+                        Use this expression whenever you're feeling full of energy, excited, or ready to face a challenge!
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-center mb-6">Real-Life Situations <span class="text-base font-normal text-slate-400">(Click to see examples)</span></h2>
+                    <div id="situations-container-en" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Situation cards will be inserted here by JavaScript -->
+                    </div>
+                </section>
+                
+                <section id="quiz-container-en" class="lesson-card"></section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const situationsData = [
+                {
+                    situation_pt: "Depois de uma boa noite de sono",
+                    icon: "😴",
+                    dialogue_fr: "J'ai bien dormi cette nuit, j'ai la pêche !",
+                    equivalent_pt: "Eu dormi bem esta noite, estou com a corda toda!"
+                },
+                {
+                    situation_pt: "Acabando o exercício",
+                    icon: "🏃‍♂️",
+                    dialogue_fr: "J'ai fait mon sport et maintenant j'ai la pêche pour le reste de la journée.",
+                    equivalent_pt: "Eu me exercitei e agora estou com energia para o resto do dia."
+                },
+                {
+                    situation_pt: "No início de um feriado",
+                    icon: "☀️",
+                    dialogue_fr: "C'est le début des vacances, j'ai vraiment la pêche !",
+                    equivalent_pt: "É o começo das férias, estou super animado!"
+                },
+                {
+                    situation_pt: "Antes de um evento importante",
+                    icon: "🎉",
+                    dialogue_fr: "J'ai hâte d'aller à la soirée, j'ai la pêche !",
+                    equivalent_pt: "Mal posso esperar para ir à festa, estou super animado!"
+                },
+                {
+                    situation_pt: "Depois de tomar café",
+                    icon: "☕",
+                    dialogue_fr: "Mon café m'a donné la pêche.",
+                    equivalent_pt: "Meu café me deu energia."
+                },
+                {
+                    situation_pt: "Durante o trabalho/estudo",
+                    icon: "🧠",
+                    dialogue_fr: "Je suis super concentré aujourd'hui, j'ai la pêche, tout se passe bien.",
+                    equivalent_pt: "Estou super concentrado hoje, estou me sentindo ótimo, tudo está indo bem."
+                }
+            ];
+
+            const quizData = [
+                {
+                    situation_pt: "Um amigo te pergunta como você está se sentindo e você quer expressar que está com muita energia. O que você diz?",
+                    options_pt: ["Je suis fatigué.", "J'ai la pêche!", "Je suis triste."],
+                    answer_pt: "J'ai la pêche!",
+                    situation_en: "A friend asks you how you're feeling and you want to express that you have a lot of energy. What do you say?",
+                    options_en: ["I'm tired.", "I'm full of energy!", "I'm sad."],
+                    answer_en: "I'm full of energy!"
+                },
+                {
+                    situation_pt: "Você terminou um projeto difícil e se sente energizado. Como você descreveria seu humor usando a expressão?",
+                    options_pt: ["J'ai le temps.", "J'ai la pêche.", "J'ai le café."],
+                    answer_pt: "J'ai la pêche.",
+                    situation_en: "You've finished a difficult project and feel energized. How would you describe your mood using the expression?",
+                    options_en: ["I have time.", "I'm feeling great.", "I have the coffee."],
+                    answer_en: "I'm feeling great."
+                }
+            ];
+
+            function createSituationCard(data, lang) {
+                const isPt = lang === 'pt';
+                const dialogue = data.dialogue_fr;
+                const equivalent_title = isPt ? "Tradução em Português:" : "Portuguese equivalent:";
+                const equivalent_text = data.equivalent_pt;
+
+                return `
+                    <div class="lesson-card situation-card">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-amber-300">${isPt ? data.situation_pt : data.situation_en}</h3>
+                            <span class="text-3xl">${data.icon}</span>
+                        </div>
+                        <div class="details">
+                            <p class="text-slate-300"><strong>Diálogo em Francês:</strong><br>${dialogue}</p>
+                            <p class="mt-4 italic text-slate-400">
+                                <strong class="text-sky-400">${equivalent_title}</strong><br>${equivalent_text}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function renderSituations(lang) {
+                const container = document.getElementById(`situations-container-${lang}`);
+                container.innerHTML = situationsData.map(d => createSituationCard(d, lang)).join('');
+                
+                document.querySelectorAll(`#situations-container-${lang} .situation-card`).forEach(card => {
+                    card.addEventListener('click', () => {
+                        card.classList.toggle('open');
+                    });
+                });
+            }
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+
+            function renderQuiz(lang) {
+                const isPt = lang === 'pt';
+                const quizContainer = document.getElementById(isPt ? 'quiz-container-pt' : 'quiz-container-en');
+                
+                if (currentQuestionIndex >= quizData.length) {
+                    const scoreText = isPt ? `Sua pontuação: ${score} / ${quizData.length}` : `Your score: ${score} / ${quizData.length}`;
+                    quizContainer.innerHTML = `
+                        <h2 class="text-2xl font-bold text-center text-sky-400">${isPt ? "Quiz Finalizado!" : "Quiz Complete!"}</h2>
+                        <p class="text-center text-lg mt-4 text-slate-300">${scoreText}</p>
+                        <div class="text-center mt-6">
+                            <button id="restart-quiz-${lang}" class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-full hover:bg-amber-600 transition-colors">
+                                ${isPt ? "Recomeçar" : "Restart"}
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById(`restart-quiz-${lang}`).addEventListener('click', () => {
+                        currentQuestionIndex = 0;
+                        score = 0;
+                        renderQuiz(lang);
+                    });
+                    return;
+                }
+                
+                const question = quizData[currentQuestionIndex];
+                const situation = isPt ? question.situation_pt : question.situation_en;
+                const options = isPt ? question.options_pt : question.options_en;
+                const answer = isPt ? question.answer_pt : question.answer_en;
+
+                const optionsHtml = options.map(option => {
+                    const buttonText = isPt ? option : question.options_en[options.indexOf(option)];
+                    return `<button class="quiz-option w-full text-left p-4 rounded-lg font-semibold" data-answer="${answer === option ? 'correct' : 'incorrect'}">${buttonText}</button>`
+                }).join('');
+
+                quizContainer.innerHTML = `
+                    <h2 class="text-2xl font-bold text-center text-sky-400">${isPt ? "Teste seu Conhecimento! 🧐" : "Test Your Knowledge! 🧐"}</h2>
+                    <p class="text-lg font-medium text-slate-300 my-4">${situation}</p>
+                    <div class="space-y-3" id="options-container-${lang}">
+                        ${optionsHtml}
+                    </div>
+                    <div id="feedback-${lang}" class="mt-4 text-center font-bold"></div>
+                `;
+
+                document.querySelectorAll(`#options-container-${lang} .quiz-option`).forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const selectedAnswer = e.target.dataset.answer;
+                        const feedbackEl = document.getElementById(`feedback-${lang}`);
+                        
+                        document.querySelectorAll(`#options-container-${lang} .quiz-option`).forEach(btn => btn.disabled = true);
+                        
+                        if (selectedAnswer === 'correct') {
+                            e.target.classList.add('correct');
+                            feedbackEl.textContent = isPt ? 'Correto! 🎉' : 'Correct! 🎉';
+                            feedbackEl.className = 'mt-4 text-center font-bold text-green-400';
+                            score++;
+                        } else {
+                            e.target.classList.add('incorrect');
+                            feedbackEl.textContent = `${isPt ? 'Incorreto. A resposta certa é:' : 'Incorrect. The right answer is:'} ${answer}`;
+                            feedbackEl.className = 'mt-4 text-center font-bold text-red-400';
+                             document.querySelector(`#options-container-${lang} .quiz-option[data-answer="correct"]`).classList.add('correct');
+                        }
+                        
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            renderQuiz(lang);
+                        }, 2000);
+                    });
+                });
+            }
+
+            const portugueseContent = document.getElementById('portuguese-content');
+            const englishContent = document.getElementById('english-content');
+            const languageButtonEn = document.getElementById('language-button-en');
+            const languageButtonPt = document.getElementById('language-button-pt');
+
+            function showPortuguese() {
+                portugueseContent.classList.remove('hidden');
+                englishContent.classList.add('hidden');
+                languageButtonEn.classList.remove('hidden');
+                languageButtonPt.classList.add('hidden');
+            }
+
+            function showEnglish() {
+                portugueseContent.classList.add('hidden');
+                englishContent.classList.remove('hidden');
+                languageButtonEn.classList.add('hidden');
+                languageButtonPt.classList.remove('hidden');
+            }
+
+            languageButtonEn.addEventListener('click', showEnglish);
+            languageButtonPt.addEventListener('click', showPortuguese);
+
+            renderSituations('pt');
+            renderSituations('en');
+            renderQuiz('pt');
+            renderQuiz('en');
+        });
+    </script>
+</body>
+</html>
